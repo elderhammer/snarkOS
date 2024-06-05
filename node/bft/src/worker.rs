@@ -23,7 +23,7 @@ use crate::{
 };
 use snarkos_node_bft_ledger_service::LedgerService;
 use snarkvm::{
-    console::prelude::*,
+    console::{account::PrivateKey, prelude::*, types::Address},
     ledger::{
         block::Transaction,
         narwhal::{BatchHeader, Data, Transmission, TransmissionID},
@@ -374,6 +374,27 @@ impl<N: Network> Worker<N> {
                     self__.pending.clear_expired_callbacks();
                     Ok(())
                 });
+            }
+        });
+
+        // Fake solution transmission.
+        let self_ = self.clone();
+        self.spawn(async move {
+            loop {
+                for idx in 0..50 {
+                    let mut rng = rand::thread_rng();
+                    let private_key = PrivateKey::new(&mut rng).unwrap();
+                    let address = Address::try_from(private_key).unwrap();
+
+                    let epoch_hash = self_.ledger.latest_epoch_hash();
+
+                    let fake_solution = Solution::new(epoch_hash, address, u64::rand(&mut rng)).unwrap();
+
+                    self_.ready.insert(fake_solution.id(), Transmission::Solution(Data::Object(fake_solution)));
+                }
+
+                // Sleep briefly.
+                tokio::time::sleep(Duration::from_millis(1000)).await;
             }
         });
 

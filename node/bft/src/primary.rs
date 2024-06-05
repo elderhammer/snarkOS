@@ -524,10 +524,10 @@ impl<N: Network> Primary<N> {
                     match (id, transmission.clone()) {
                         (TransmissionID::Solution(solution_id), Transmission::Solution(solution)) => {
                             // Check if the solution is still valid.
-                            if let Err(e) = self.ledger.check_solution_basic(solution_id, solution).await {
-                                trace!("Proposing - Skipping solution '{}' - {e}", fmt_id(solution_id));
-                                continue 'inner;
-                            }
+                            // if let Err(e) = self.ledger.check_solution_basic(solution_id, solution).await {
+                            //     trace!("Proposing - Skipping solution '{}' - {e}", fmt_id(solution_id));
+                            //     continue 'inner;
+                            // }
                         }
                         (TransmissionID::Transaction(transaction_id), Transmission::Transaction(transaction)) => {
                             // Check if the transaction is still valid.
@@ -1213,19 +1213,19 @@ impl<N: Network> Primary<N> {
         self.spawn(async move {
             while let Some((solution_id, solution, callback)) = rx_unconfirmed_solution.recv().await {
                 // Compute the worker ID.
-                let Ok(worker_id) = assign_to_worker(solution_id, self_.num_workers()) else {
-                    error!("Unable to determine the worker ID for the unconfirmed solution");
-                    continue;
-                };
-                let self_ = self_.clone();
-                tokio::spawn(async move {
-                    // Retrieve the worker.
-                    let worker = &self_.workers[worker_id as usize];
-                    // Process the unconfirmed solution.
-                    let result = worker.process_unconfirmed_solution(solution_id, solution).await;
-                    // Send the result to the callback.
-                    callback.send(result).ok();
-                });
+                // let Ok(worker_id) = assign_to_worker(solution_id, self_.num_workers()) else {
+                //     error!("Unable to determine the worker ID for the unconfirmed solution");
+                //     continue;
+                // };
+                // let self_ = self_.clone();
+                // tokio::spawn(async move {
+                //     // Retrieve the worker.
+                //     let worker = &self_.workers[worker_id as usize];
+                //     // Process the unconfirmed solution.
+                //     let result = worker.process_unconfirmed_solution(solution_id, solution).await;
+                //     // Send the result to the callback.
+                //     callback.send(result).ok();
+                // });
             }
         });
 

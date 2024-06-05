@@ -27,6 +27,10 @@ use std::{fmt::Debug, ops::Range};
 
 #[async_trait]
 pub trait LedgerService<N: Network>: Debug + Send + Sync {
+    fn latest_epoch_hash(&self) -> N::BlockHash {
+        unimplemented!()
+    }
+
     /// Returns the latest round in the ledger.
     fn latest_round(&self) -> u64;
 

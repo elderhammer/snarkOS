@@ -67,6 +67,10 @@ impl<N: Network, C: ConsensusStorage<N>> fmt::Debug for CoreLedgerService<N, C> 
 
 #[async_trait]
 impl<N: Network, C: ConsensusStorage<N>> LedgerService<N> for CoreLedgerService<N, C> {
+    fn latest_epoch_hash(&self) -> N::BlockHash {
+        self.ledger.latest_epoch_hash().unwrap()
+    }
+
     /// Returns the latest round in the ledger.
     fn latest_round(&self) -> u64 {
         self.ledger.latest_round()
