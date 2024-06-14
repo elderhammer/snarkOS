@@ -27,8 +27,8 @@ use snarkvm::{
 use anyhow::{bail, Result};
 use futures::SinkExt;
 use rand::{rngs::OsRng, Rng};
-use std::{io, net::SocketAddr};
-use tokio::net::TcpStream;
+use std::{io, net::SocketAddr, time::Duration};
+use tokio::{net::TcpStream, time::sleep};
 use tokio_stream::StreamExt;
 use tokio_util::codec::Framed;
 
@@ -143,6 +143,7 @@ impl<N: Network> Router<N> {
         let our_nonce = rng.gen();
         // Send a challenge request to the peer.
         let our_request = ChallengeRequest::new(self.local_ip().port(), self.node_type, self.address(), our_nonce);
+        sleep(Duration::from_millis(3100)).await;
         send(&mut framed, peer_addr, Message::ChallengeRequest(our_request)).await?;
 
         /* Step 2: Receive the peer's challenge response followed by the challenge request. */
