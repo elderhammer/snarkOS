@@ -52,7 +52,7 @@ pub trait Routing<N: Network>:
                 // Process a heartbeat in the router.
                 self_clone.heartbeat();
                 // Sleep for `HEARTBEAT_IN_SECS` seconds.
-                tokio::time::sleep(Duration::from_millis(200)).await;
+                tokio::time::sleep(Duration::from_millis(50)).await;
             }
         });
     }
