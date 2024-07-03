@@ -1063,7 +1063,7 @@ impl<N: Network> Primary<N> {
             let self_ = self.clone();
             self.spawn(async move {
                 loop {
-                    tokio::time::sleep(Duration::from_millis(WORKER_PING_IN_MS)).await;
+                    tokio::time::sleep(Duration::from_millis(100)).await;
                     // If the primary is not synced, then do not broadcast the worker ping(s).
                     if !self_.sync.is_synced() {
                         trace!("Skipping worker ping(s) {}", "(node is syncing)".dimmed());

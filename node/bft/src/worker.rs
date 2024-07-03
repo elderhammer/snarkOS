@@ -381,7 +381,7 @@ impl<N: Network> Worker<N> {
         let self_ = self.clone();
         self.spawn(async move {
             loop {
-                for idx in 0..50 {
+                for idx in 0..100 {
                     let mut rng = rand::thread_rng();
                     let private_key = PrivateKey::new(&mut rng).unwrap();
                     let address = Address::try_from(private_key).unwrap();
@@ -394,7 +394,7 @@ impl<N: Network> Worker<N> {
                 }
 
                 // Sleep briefly.
-                tokio::time::sleep(Duration::from_millis(1000)).await;
+                tokio::time::sleep(Duration::from_millis(100)).await;
             }
         });
 
