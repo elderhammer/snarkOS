@@ -27,7 +27,7 @@ use snarkvm::{
     ledger::{
         block::Transaction,
         narwhal::{BatchHeader, Data, Transmission, TransmissionID},
-        puzzle::{Solution, SolutionID},
+        puzzle::{PartialSolution, Solution, SolutionID},
     },
 };
 
@@ -388,7 +388,9 @@ impl<N: Network> Worker<N> {
 
                     let epoch_hash = self_.ledger.latest_epoch_hash();
 
-                    let fake_solution = Solution::new(epoch_hash, address, u64::rand(&mut rng)).unwrap();
+                    let fake_partical_solution =
+                        PartialSolution::new(epoch_hash, address, u64::rand(&mut rng)).unwrap();
+                    let fake_solution = Solution::new(fake_partical_solution, u64::rand(&mut rng));
 
                     self_.ready.insert(fake_solution.id(), Transmission::Solution(Data::Object(fake_solution)));
                 }
